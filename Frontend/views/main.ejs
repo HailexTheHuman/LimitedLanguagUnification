@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/main.css">
+    <script src="/scripts/main.js" defer></script>
+    <title>Main</title>
+</head>
+<body>
+    <header class="banner">
+        <h1>Limited Language Unification</h1>
+    </header>
+    <div class="sidePanel">
+        <div class="sideBanner">
+            <label for="modelSelection">Select Model</label>
+            <select name="model" id="modelSelection">
+                <option value="0" disabled selected>Choose a model</option>
+                <option value="GPT">GPT</option>
+                <option value="Gemini">Gemini</option>
+                <option value="Claude">Claude</option>
+            </select>
+        </div>
+    </div>
+    <main>
+        <div id="conversation" class="conversation"></div>
+        <input type="text" id="userInput" placeholder="Enter your message here...">
+        <button id="sendButton">Send</button>
+    </main>
+</body>
+</html>
