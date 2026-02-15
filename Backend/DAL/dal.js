@@ -2,6 +2,7 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const fs = require('fs');
 
 
+
 const hiddenInfo = JSON.parse(fs.readFileSync("../../hiddenInformation.json", "utf8"));
 
 const password = hiddenInfo.mongo_password;
@@ -78,4 +79,23 @@ async function getUsers() {
     }
 }
 
-testConnection();
+async function getUserByUsername(username) {
+    try {
+        await client.connect();
+        return await client.db("LLU").collection("users").findOne({username: username});
+    } finally {
+        await client.close();
+    }
+}
+
+async function getResponse(context, prompt, model) {
+    return {response: "I am responding!"}
+}
+
+exports.testConnection = testConnection;
+exports.insertDummyUser = insertDummyUser;
+exports.getUsers = getUsers;
+exports.getUserByUsername = getUserByUsername;
+exports.getResponse = getResponse;
+
+//testConnection();

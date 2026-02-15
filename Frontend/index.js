@@ -39,8 +39,15 @@ app.post('/login', (req, res) => {
     }
 });
 
-app.get('/main', (req, res) => {
-    res.render('main');
+app.get('/main', async (req, res) => {
+    const user = await fetch('http://localhost:3001/getUser', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username: 'admin' })
+    });
+    res.render('main', {user: await user.json()});
 })
 
 app.listen(port, () => {

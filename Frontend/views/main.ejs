@@ -8,8 +8,8 @@
     <script src="/scripts/main.js" defer></script>
     <title>Main</title>
 </head>
-<body>
-    <header class="banner">
+<body user-data="<%= JSON.stringify(user) %>">
+    <header>
         <h1>Limited Language Unification</h1>
     </header>
     <div class="sidePanel">
@@ -22,6 +22,9 @@
                 <option value="Claude">Claude</option>
             </select>
         </div>
+        <%for (let i = 0; i < user.conversations.length; i++) {%>
+            <div class="conversation"><%= user.conversations[i].name%></div>
+        <%}%>
     </div>
     <main>
         <div id="conversation" class="conversation"></div>
