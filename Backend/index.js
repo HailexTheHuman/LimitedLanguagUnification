@@ -8,8 +8,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.post("/generate", async (req, res) => {
+
     const { context, prompt, model } = req.body;
-    res.json(DAL.getResponse(context, prompt, model))
+    const response = await DAL.getResponse(context, prompt, model);
+
+    res.json(response)
 })
 
 app.post("/getUser", async (req, res) => {

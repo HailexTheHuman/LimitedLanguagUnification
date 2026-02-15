@@ -3,7 +3,7 @@ const conversation = document.getElementById("conversation")
 const prompt = document.getElementById("userInput")
 const sendButton = document.getElementById("sendButton")
 
-sendButton.addEventListener("click", () => {
+sendButton.addEventListener("click", async () => {
     const userMessage = document.createElement("div")
     userMessage.classList.add("userMessage")
     userMessage.innerText = prompt.value
@@ -11,6 +11,15 @@ sendButton.addEventListener("click", () => {
     conversation.appendChild(userMessage)
     const modelMessage = document.createElement("div")
     modelMessage.classList.add("modelMessage")
-    modelMessage.innerText = "Hello, this is a response!"
+
+    const response = await fetch('http://localhost:3000/sendPrompt', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ context: "context here!", prompt: userMessage.innerText, model: "model here!" })
+    })
+
+    modelMessage.innerText = (await response.json()).response
     conversation.appendChild(modelMessage)
 })

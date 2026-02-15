@@ -50,6 +50,20 @@ app.get('/main', async (req, res) => {
     res.render('main', {user: await user.json()});
 })
 
+app.post('/sendPrompt', async (req, res) => {
+    const { context, prompt, model } = req.body;
+
+    const response = await (await fetch('http://localhost:3001/generate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ context: context, prompt: prompt, model: model })
+    })).json();
+
+    res.json(await response);
+})
+
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
