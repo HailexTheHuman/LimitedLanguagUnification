@@ -20,16 +20,31 @@ app.get('/login', (req, res) => {
         message: ''
     };
 
-    res.render('login');
+    res.render('login', model);
 });
 
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
+    loginSuccessful = false;
     const { username, password } = req.body;
     
-    if (username === 'admin' && password === 'password') {
+
+    const user = await fetch('http://localhost:3001/getUser', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify({ username: username, password: password })
+    });
+    const userData = await user.json();
+    console.log(userData);
+    if (userData && userData.password === password) {
+        loginSuccessful = true;
+    }
+    
+    if (loginSuccessful) {
         res.send('Login successful!');
     } else {
-
         let model = {
             username: username,
             password: password,
