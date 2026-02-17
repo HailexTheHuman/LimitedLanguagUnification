@@ -43,7 +43,7 @@ app.post('/login', async (req, res) => {
     }
     
     if (loginSuccessful) {
-        res.send('Login successful!');
+        res.redirect('/main');
     } else {
         let model = {
             username: username,
