@@ -1,13 +1,13 @@
 const { spawn } = require("child_process");
 
-const front = spawn("npm", ["start"], {
+const front = spawn("npm", ["run", "dev"], {
     cwd: "./Frontend",
     shell: true
 });
 
 
 
-const back = spawn("npm", ["start"], {
+const back = spawn("npm", ["run", "dev"], {
     cwd: "./Backend",
     shell: true
 });

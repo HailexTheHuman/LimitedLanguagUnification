@@ -1,5 +1,6 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const fs = require('fs');
+require('dotenv').config();
 
 
 
