@@ -12,7 +12,7 @@ sendButton.addEventListener("click", async () => {
     const modelMessage = document.createElement("div")
     modelMessage.classList.add("modelMessage")
 
-    const response = await fetch('http://localhost:3000/sendPrompt', {
+    const response = await fetch('/sendPrompt', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

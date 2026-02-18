@@ -4,6 +4,8 @@ const port = 3001;
 
 const DAL = require('./DAL/dal');
 
+console.log("Backend started!")
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -20,6 +22,14 @@ app.post("/getUser", async (req, res) => {
     res.json(await DAL.getUserByUsername(username))
 })
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-});
+
+function setup() {
+    app.listen(port, () => {
+        console.log(`Server running at http://localhost:${port}`);
+    });
+}
+
+exports.setup = setup;
+
+setup()
+

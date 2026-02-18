@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
+console.log("Frontend started!")
 
 app.use(express.static('public'));
 app.use(express.json());
@@ -79,6 +80,12 @@ app.post('/sendPrompt', async (req, res) => {
     res.json(await response);
 })
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-});
+function setup() {
+    app.listen(port, () => {
+        console.log(`Server running at http://localhost:${port}`);
+    });
+}
+
+exports.setup = setup;
+
+setup()

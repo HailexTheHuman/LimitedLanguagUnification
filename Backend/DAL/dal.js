@@ -1,12 +1,14 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const fs = require('fs');
+require('dotenv').config();
 
 
 
 //const hiddenInfo = JSON.parse(fs.readFileSync("../../hiddenInformation.json", "utf8"));
-const hiddenInfo = "placeholderString";
+//const password = hiddenInfo.mongo_password
 
-const password = hiddenInfo.mongo_password;
+
+const password = process.env.MONGO_PASS;
 const uri = `mongodb+srv://cterry_db_user:${password}@cluster0.rqbyqym.mongodb.net/?appName=Cluster0`;
 
 const client = new MongoClient(uri, {
