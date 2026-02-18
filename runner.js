@@ -1,0 +1,19 @@
+const { spawn } = require("child_process");
+
+const front = spawn("npm", ["start"], {
+    cwd: "./Frontend",
+    shell: true
+});
+
+
+
+const back = spawn("npm", ["start"], {
+    cwd: "./Backend",
+    shell: true
+});
+
+back.stdout.on("data", (data) => console.log(data.toString()));
+back.stderr.on("data", (data) => console.error(data.toString()));
+
+front.stdout.on("data", (data) => console.log(data.toString()));
+front.stderr.on("data", (data) => console.error(data.toString()));
