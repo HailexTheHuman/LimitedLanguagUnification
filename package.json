@@ -7,7 +7,7 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "start": "\"cd ./Frontend && npm run start\""
+    "start": "cd ./Frontend && npm run start && cd ./Backend && npm run start"
   },
   "dependencies": {
     "concurrently": "^9.2.1",
