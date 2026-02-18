@@ -7,7 +7,7 @@ const fs = require('fs');
 //const password = hiddenInfo.mongo_password
 
 
-const password = MONGO_PASS;
+const password = process.env.MONGO_PASS;
 const uri = `mongodb+srv://cterry_db_user:${password}@cluster0.rqbyqym.mongodb.net/?appName=Cluster0`;
 
 const client = new MongoClient(uri, {
