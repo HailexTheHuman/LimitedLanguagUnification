@@ -23,3 +23,10 @@ sendButton.addEventListener("click", async () => {
     modelMessage.innerText = (await response.json()).response
     conversation.appendChild(modelMessage)
 })
+
+
+prompt.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+        sendButton.click();
+    }
+})
