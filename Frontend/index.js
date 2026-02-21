@@ -13,7 +13,7 @@ app.set('view engine', 'ejs');
 app.use(cookies({
     name: 'session',
     secret: 'notCookieMonster',
-    maxAge: 1000 * 60 * 60 * 2
+    maxAge: 1000 * 60 * 60 * 2 //2 hours of cookies before expiring
 }));
 
 
@@ -88,6 +88,45 @@ app.post('/login', async (req, res) => {
         res.render('login', model);
     }
 });
+
+app.post('/register', async (req, res) => {
+    registerSuccessful = false;
+    message = "";
+    const {username, password} = req.body;
+    
+
+    const user = await fetch('http://localhost:3001/getUser', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify({ username: username})
+    });
+    const userData = await user.json();
+    console.log(userData);
+    if (userData) {
+        message = "You already have an account"
+    } else if (
+        await fetch('http://localhost:3001/createUser')
+    ) {
+        registerSuccessful = true;
+    }
+    
+    if (registerSuccessful) {
+        req.session.username = username;
+        res.redirect('/main');
+    } else {
+        req.session = null;
+        let model = {
+            username: username,
+            password: password,
+            message: message
+        };
+        res.render('login', model);
+    }
+});
+
 
 app.get('/main', async (req, res) => {
     if (req.session.username) {
