@@ -23,9 +23,7 @@
                     <option value="Claude">Claude</option>
                 </select>
             </div>
-            <%for (let i = 0; i < user.conversations.length; i++) {%>
-                <div class="conversation"><%= user.conversations[i].name%></div>
-            <%}%>
+            <div class="sideContent" id="conversationList"></div>
         </div>
         <main>
             <div id="conversation" class="conversation"></div>

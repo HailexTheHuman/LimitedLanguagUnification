@@ -1,24 +1,45 @@
+* {
+    background-color:black;
+    color:white;
+}
+
 header {
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid white;
 }
 
 div.mainContent {
     padding: 10px;
     display: flex;
     flex-direction: row;
+    height: 85vh;
 }
 
 div.sidePanel {
     padding: 10px;
     width: 200px;
-    border-right: 1px solid black;
+    border-right: 1px solid white;
+    overflow-y: auto;
 }
 
 div.sideBanner {
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid white;
     padding: 10px;
+
 }
 
 main {
     padding: 10px;
+    overflow-y: auto;
+}
+
+div.modelMessage {
+    padding: 10px;
+    margin: 10px;
+    background-color: rgb(50, 0, 0);
+}
+
+div.userMessage {
+    padding: 10px;
+    margin: 10px;
+    background-color: rgb(0, 0, 50);
 }
