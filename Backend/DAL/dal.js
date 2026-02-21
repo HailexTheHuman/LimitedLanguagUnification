@@ -4,6 +4,12 @@ require('dotenv').config();
 
 
 
+
+
+
+
+
+
 //const hiddenInfo = JSON.parse(fs.readFileSync("../../hiddenInformation.json", "utf8"));
 //const password = hiddenInfo.mongo_password
 
@@ -91,8 +97,33 @@ async function getUserByUsername(username) {
     }
 }
 
-async function getResponse(context, prompt, model) {
-    return {response: "I am responding!"}
+async function getResponse(context, prompt, model, seed=null, params={}) {
+    context.push({
+        role: "user",
+        content: prompt
+    })
+    if (seed !== null) context.push(
+        {
+            role: "assistant",
+            content: seed
+        }
+    )
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${process.env.OPEN_ROUTER}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            model: model,
+            //max_tokens: 100,
+            messages: context
+        }),
+    });
+    const jsonRes = await res.json();
+    const message = jsonRes.choices[0].message;
+    console.log(message);
+    return message;
 }
 
 exports.testConnection = testConnection;
@@ -102,3 +133,6 @@ exports.getUserByUsername = getUserByUsername;
 exports.getResponse = getResponse;
 
 //testConnection();
+
+
+getResponse([], "how many planets in the solar system", 'openrouter/free', "NASA says");
