@@ -21,6 +21,11 @@ app.get('/', (req, res) => {
     res.redirect('/main');
 });
 
+app.get('/logout', (req, res) => {
+    req.session = null;
+    res.redirect('/login');
+});
+
 
 app.get('/login', (req, res) => {
     if (req.session.username) {
