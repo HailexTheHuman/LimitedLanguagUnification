@@ -97,18 +97,19 @@ async function getUserByUsername(username) {
     }
 }
 
-async function getResponse(context, prompt, model, seed=null, params={}) {
+async function getResponse(context, prompt, model, responsePrefix="", params={}) {
     context.push({
         role: "user",
         content: prompt
     })
-    if (seed !== null) context.push(
+    if (responsePrefix !== "") context.push(
         {
             role: "assistant",
-            content: seed
+            content: responsePrefix
         }
     )
-    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+
+    let fetchParams = {
         method: 'POST',
         headers: {
             Authorization: `Bearer ${process.env.OPEN_ROUTER}`,
@@ -119,11 +120,19 @@ async function getResponse(context, prompt, model, seed=null, params={}) {
             //max_tokens: 100,
             messages: context
         }),
-    });
+    }
+
+    for (const [key, value] of Object.entries(params)) {
+        fetchParams[key] = value;
+    }
+
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', fetchParams);
+    if (res.status !== 200) {
+        return {message:"A problem occured, error code: " + res.status + ""}
+    }
     const jsonRes = await res.json();
-    const message = jsonRes.choices[0].message;
-    console.log(message);
-    return message;
+    const message = responsePrefix + jsonRes.choices[0].message.content;
+    return { message };
 }
 
 exports.testConnection = testConnection;
@@ -135,4 +144,4 @@ exports.getResponse = getResponse;
 //testConnection();
 
 
-getResponse([], "how many planets in the solar system", 'openrouter/free', "NASA says");
+//getResponse([], "what is cake?", 'openrouter/free', '', {max_tokens:10}).then(console.log);

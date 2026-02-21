@@ -17,10 +17,10 @@ sendButton.addEventListener("click", async () => {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ context: "context here!", prompt: userMessage.innerText, model: "model here!" })
+        body: JSON.stringify({ context: [], prompt: userMessage.innerText, model: 'openrouter/free', resPrefix: "", params: {} })
     })
 
-    modelMessage.innerText = (await response.json()).response
+    modelMessage.innerText = (await response.json()).message
     conversation.appendChild(modelMessage)
 })
 
