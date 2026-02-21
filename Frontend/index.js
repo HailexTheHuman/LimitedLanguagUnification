@@ -23,24 +23,32 @@ app.get('/', (req, res) => {
 
 
 app.get('/login', (req, res) => {
-    let model = {
-        username: '',
-        password: '',
-        message: ''
-    };
+    if (req.session.username) {
+        res.redirect('/main');
+    } else {
+        let model = {
+            username: '',
+            password: '',
+            message: ''
+        };
 
-    res.render('login', model);
+        res.render('login', model);
+    }
 });
 
 
 app.get('/register', (req, res) => {
-    let model = {
-        username: '',
-        password: '',
-        message: ''
-    };
+    if (req.session.username) {
+        res.redirect('/main');
+    } else {
+        let model = {
+            username: '',
+            password: '',
+            message: ''
+        };
 
-    res.render('register', model);
+        res.render('register', model);
+    }
 });
 
 app.post('/login', async (req, res) => {
@@ -63,7 +71,7 @@ app.post('/login', async (req, res) => {
     }
     
     if (loginSuccessful) {
-        req.session.username = username
+        req.session.username = username;
         res.redirect('/main');
     } else {
         req.session = null;
