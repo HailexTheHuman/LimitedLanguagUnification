@@ -1,0 +1,24 @@
+header {
+    border-bottom: 1px solid black;
+}
+
+div.mainContent {
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+div.sidePanel {
+    padding: 10px;
+    width: 200px;
+    border-right: 1px solid black;
+}
+
+div.sideBanner {
+    border-bottom: 1px solid black;
+    padding: 10px;
+}
+
+main {
+    padding: 10px;
+}

@@ -12,24 +12,26 @@
     <header>
         <h1>Limited Language Unification</h1>
     </header>
-    <div class="sidePanel">
-        <div class="sideBanner">
-            <label for="modelSelection">Select Model</label>
-            <select name="model" id="modelSelection">
-                <option value="0" disabled selected>Choose a model</option>
-                <option value="GPT">GPT</option>
-                <option value="Gemini">Gemini</option>
-                <option value="Claude">Claude</option>
-            </select>
+    <div class="mainContent">
+        <div class="sidePanel">
+            <div class="sideBanner">
+                <label for="modelSelection">Select Model</label>
+                <select name="model" id="modelSelection">
+                    <option value="0" disabled selected>Choose a model</option>
+                    <option value="GPT">GPT</option>
+                    <option value="Gemini">Gemini</option>
+                    <option value="Claude">Claude</option>
+                </select>
+            </div>
+            <%for (let i = 0; i < user.conversations.length; i++) {%>
+                <div class="conversation"><%= user.conversations[i].name%></div>
+            <%}%>
         </div>
-        <%for (let i = 0; i < user.conversations.length; i++) {%>
-            <div class="conversation"><%= user.conversations[i].name%></div>
-        <%}%>
+        <main>
+            <div id="conversation" class="conversation"></div>
+            <input type="text" id="userInput" placeholder="Enter your message here...">
+            <button id="sendButton">Send</button>
+        </main>
     </div>
-    <main>
-        <div id="conversation" class="conversation"></div>
-        <input type="text" id="userInput" placeholder="Enter your message here...">
-        <button id="sendButton">Send</button>
-    </main>
 </body>
 </html>
