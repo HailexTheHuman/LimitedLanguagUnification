@@ -107,10 +107,19 @@ app.post('/register', async (req, res) => {
     console.log(userData);
     if (userData) {
         message = "You already have an account"
-    } else if (
-        await fetch('http://localhost:3001/createUser')
-    ) {
-        registerSuccessful = true;
+    } else {
+        const registeredUser = await fetch('http://localhost:3001/createUser', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify({ username: username, password: password})
+        });
+        const newUserData = await registeredUser.json();
+        if (newUserData) {
+            registerSuccessful = true;
+        }
     }
     
     if (registerSuccessful) {

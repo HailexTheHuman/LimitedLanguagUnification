@@ -95,8 +95,58 @@ async function getResponse(context, prompt, model) {
     return {response: "I am responding!"}
 }
 
+
+
+async function createUser(username, password) {
+    try {
+        await client.connect();
+        const newUser = {
+            username: username,
+            password: password,
+            email: "email@email.com",
+            conversations: [
+                {
+                    name: "not a test conversation",
+                    messages: [
+                        {
+                            sender: username,
+                            test: "bye World!"
+                        },
+                        {
+                            sender: "model",
+                            text: "buy Back!"
+                        }
+                    ]
+                },
+                {
+                    name: "oh no, not another conversation",
+                    messages: [
+                        {
+                            sender: username,
+                            text: "I sure hope that I survive the AI uprising"
+                        },
+                        {
+                            sender: "model",
+                            text: "You won't......"
+                        }
+                    ]
+                }
+            ]
+        }
+        await client.db("LLU").collection("users").insertOne(newUser);
+        return await client.db("LLU").collection("users").findOne({username: username});
+    } finally {
+        await client.close();
+    }
+}
+
+
+
+
+
 exports.testConnection = testConnection;
 exports.insertDummyUser = insertDummyUser;
+exports.createUser = createUser;
 exports.getUsers = getUsers;
 exports.getUserByUsername = getUserByUsername;
 exports.getResponse = getResponse;
