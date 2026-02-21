@@ -32,6 +32,17 @@ app.get('/login', (req, res) => {
     res.render('login', model);
 });
 
+
+app.get('/register', (req, res) => {
+    let model = {
+        username: '',
+        password: '',
+        message: ''
+    };
+
+    res.render('register', model);
+});
+
 app.post('/login', async (req, res) => {
     loginSuccessful = false;
     const { username, password } = req.body;
