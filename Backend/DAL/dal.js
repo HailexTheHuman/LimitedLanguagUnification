@@ -44,7 +44,7 @@ async function insertDummyUser() {
                     messages: [
                         {
                             sender: "user",
-                            test: "Hello World!"
+                            text: "Hello World!"
                         },
                         {
                             sender: "model",
@@ -110,7 +110,7 @@ async function createUser(username, password) {
                     messages: [
                         {
                             sender: username,
-                            test: "bye World!"
+                            text: "bye World!"
                         },
                         {
                             sender: "model",
