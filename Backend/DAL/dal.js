@@ -97,7 +97,16 @@ async function getUserByUsername(username) {
     }
 }
 
-async function getResponse(context, prompt, model, responsePrefix="", params={}) {
+async function getResponse(conversation, prompt, model, responsePrefix="", params={}) {
+    let context = []
+
+    for (const message of conversation) {
+        context.push({
+            role: message.sender === "model" ? "assistant" : "user",
+            content: message.text
+        })
+    }
+
     context.push({
         role: "user",
         content: prompt
