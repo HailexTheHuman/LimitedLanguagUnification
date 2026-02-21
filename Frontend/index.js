@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const port = 3000;
+const cookies = require('cookie-session');
 
 console.log("Frontend started!")
 
@@ -8,6 +9,13 @@ app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
+
+app.use(cookies({
+    name: 'session',
+    secret: 'notCookieMonster',
+    maxAge: 1000 * 60 * 60 * 2
+}));
+
 
 app.get('/', (req, res) => {
     res.redirect('/main');
@@ -44,8 +52,10 @@ app.post('/login', async (req, res) => {
     }
     
     if (loginSuccessful) {
+        req.session.username = username
         res.redirect('/main');
     } else {
+        req.session = null;
         let model = {
             username: username,
             password: password,
@@ -56,14 +66,18 @@ app.post('/login', async (req, res) => {
 });
 
 app.get('/main', async (req, res) => {
-    const user = await fetch('http://localhost:3001/getUser', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ username: 'admin' })
-    });
-    res.render('main', {user: await user.json()});
+    if (req.session.username) {
+        const user = await fetch('http://localhost:3001/getUser', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username: req.session.username })
+        });
+        res.render('main', {user: await user.json()});
+    } else {
+        res.redirect('/login');
+    }
 })
 
 app.post('/sendPrompt', async (req, res) => {
