@@ -3,17 +3,40 @@ const conversation = document.getElementById("conversation")
 const prompt = document.getElementById("userInput")
 const sendButton = document.getElementById("sendButton")
 const conversationListElement = document.getElementById("conversationList")
+const modelSelect = document.getElementById("modelSelection")
+
 const conversationList = []
+let currentConversation = {
+    name: "none",
+    messages: []
+}
+
+function displayConversation() {
+    conversation.innerHTML = ""
+    for (const message of currentConversation.messages) {
+        const messageElement = document.createElement("div")
+        messageElement.innerText = message.text
+        messageElement.classList.add(message.sender === "model" ? "modelMessage" : "userMessage")
+        conversation.appendChild(messageElement)
+    }
+}
 
 function pushConversation(conversation) {
     conversationList.push(conversation)
     const conversationElement = document.createElement("div")
+    conversationElement.classList.add("conversationSelect")
     conversationElement.innerText = conversation.name
     conversationElement.classList.add("conversationSelect")
     conversationListElement.appendChild(conversationElement)
+    conversationElement.addEventListener("click", () => {
+        currentConversation = conversation
+        displayConversation()
+    })
 }
 
 sendButton.addEventListener("click", async () => {
+    if (prompt.value === "") return;
+    if (modelSelect.value === "0") return;
     const userMessage = document.createElement("div")
     userMessage.classList.add("userMessage")
     userMessage.innerText = prompt.value
@@ -29,10 +52,13 @@ sendButton.addEventListener("click", async () => {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ context: [], prompt: userMessage.innerText, model: 'openrouter/free', resPrefix: "", params: {} })
+        body: JSON.stringify({ context: currentConversation.messages, prompt: userMessage.innerText, model: modelSelect.value, resPrefix: "", params: {} })
     })
+    const responseText = (await response.json()).message
+    currentConversation.messages.push({sender: user.username, text: userMessage.innerText})
+    currentConversation.messages.push({sender: "model", text: responseText})
+    modelMessage.innerText = responseText
 
-    modelMessage.innerText = (await response.json()).message
     modelMessage.classList.add("modelMessage")
     conversation.appendChild(modelMessage)
 })

@@ -43,3 +43,13 @@ div.userMessage {
     margin: 10px;
     background-color: rgb(0, 0, 50);
 }
+
+div.conversationSelect {
+    margin: 5px;
+    padding: 5px;
+}
+
+div.conversationSelect:hover {
+    cursor: pointer;
+    background-color: rgb(50, 50, 50);
+}
