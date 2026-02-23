@@ -46,7 +46,7 @@ async function createUser(username, password) {
             email: "email@email.com",
             conversations: [
                 {
-                    name: "not a test conversation",
+                    name: `${username}'s first conversation`,
                     messages: [
                         {
                             sender: username,
@@ -59,7 +59,7 @@ async function createUser(username, password) {
                     ]
                 },
                 {
-                    name: "oh no, not another conversation",
+                    name: `${username}'s second conversation`,
                     messages: [
                         {
                             sender: username,
