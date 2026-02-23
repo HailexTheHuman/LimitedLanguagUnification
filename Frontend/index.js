@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const port = 3000;
+const cookies = require('cookie-session');
 
 console.log("Frontend started!")
 
@@ -9,19 +10,50 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 
+app.use(cookies({
+    name: 'session',
+    secret: 'notCookieMonster',
+    maxAge: 1000 * 60 * 60 * 2 //2 hours of cookies before expiring
+}));
+
+
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.redirect('/main');
+});
+
+app.get('/logout', (req, res) => {
+    req.session = null;
+    res.redirect('/login');
 });
 
 
 app.get('/login', (req, res) => {
-    let model = {
-        username: '',
-        password: '',
-        message: ''
-    };
+    if (req.session.username) {
+        res.redirect('/main');
+    } else {
+        let model = {
+            username: '',
+            password: '',
+            message: ''
+        };
 
-    res.render('login', model);
+        res.render('login', model);
+    }
+});
+
+
+app.get('/register', (req, res) => {
+    if (req.session.username) {
+        res.redirect('/main');
+    } else {
+        let model = {
+            username: '',
+            password: '',
+            message: ''
+        };
+
+        res.render('register', model);
+    }
 });
 
 app.post('/login', async (req, res) => {
@@ -44,8 +76,10 @@ app.post('/login', async (req, res) => {
     }
     
     if (loginSuccessful) {
+        req.session.username = username;
         res.redirect('/main');
     } else {
+        req.session = null;
         let model = {
             username: username,
             password: password,
@@ -55,15 +89,67 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.get('/main', async (req, res) => {
+app.post('/register', async (req, res) => {
+    registerSuccessful = false;
+    message = "";
+    const {username, password} = req.body;
+    
+
     const user = await fetch('http://localhost:3001/getUser', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ username: 'admin' })
+
+        body: JSON.stringify({ username: username})
     });
-    res.render('main', {user: await user.json()});
+    const userData = await user.json();
+    console.log(userData);
+    if (userData) {
+        message = "You already have an account"
+    } else {
+        const registeredUser = await fetch('http://localhost:3001/createUser', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify({ username: username, password: password})
+        });
+        const newUserData = await registeredUser.json();
+        if (newUserData) {
+            registerSuccessful = true;
+        }
+    }
+    
+    if (registerSuccessful) {
+        req.session.username = username;
+        res.redirect('/main');
+    } else {
+        req.session = null;
+        let model = {
+            username: username,
+            password: password,
+            message: message
+        };
+        res.render('login', model);
+    }
+});
+
+
+app.get('/main', async (req, res) => {
+    if (req.session.username) {
+        const user = await fetch('http://localhost:3001/getUser', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username: req.session.username })
+        });
+        res.render('main', {user: await user.json()});
+    } else {
+        res.redirect('/login');
+    }
 })
 
 app.post('/sendPrompt', async (req, res) => {

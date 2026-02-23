@@ -37,43 +37,44 @@ async function testConnection() {
     }
 }
 
-async function insertDummyUser() {
+async function createUser(username, password) {
     try {
         await client.connect();
-        const dummyUser = {
-            username: "user",
-            password: "password",
+        const newUser = {
+            username: username,
+            password: password,
             email: "email@email.com",
             conversations: [
                 {
-                    name: "test conversation",
+                    name: "not a test conversation",
                     messages: [
                         {
-                            sender: "user",
-                            test: "Hello World!"
+                            sender: username,
+                            text: "bye World!"
                         },
                         {
                             sender: "model",
-                            text: "Hello Back!"
+                            text: "buy Back!"
                         }
                     ]
                 },
                 {
-                    name: "another conversation",
+                    name: "oh no, not another conversation",
                     messages: [
                         {
-                            sender: "user",
-                            text: "how many plumbers does it take to change a light bulb?"
+                            sender: username,
+                            text: "I sure hope that I survive the AI uprising"
                         },
                         {
                             sender: "model",
-                            text: "I have no idea."
+                            text: "You won't......"
                         }
                     ]
                 }
             ]
         }
-        await client.db("LLU").collection("users").insertOne(dummyUser);
+        await client.db("LLU").collection("users").insertOne(newUser);
+        return await client.db("LLU").collection("users").findOne({username: username});
     } finally {
         await client.close();
     }
@@ -144,8 +145,16 @@ async function getResponse(conversation, prompt, model, responsePrefix="", param
     return { message };
 }
 
+
+
+
+
+
+
+
+
 exports.testConnection = testConnection;
-exports.insertDummyUser = insertDummyUser;
+exports.createUser = createUser;
 exports.getUsers = getUsers;
 exports.getUserByUsername = getUserByUsername;
 exports.getResponse = getResponse;

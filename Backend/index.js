@@ -23,6 +23,12 @@ app.post("/getUser", async (req, res) => {
 })
 
 
+app.post("/createUser", async (req, res) => {
+    const { username, password } = req.body;
+    res.json(await DAL.createUser(username, password))
+})
+
+
 function setup() {
     app.listen(port, () => {
         console.log(`Server running at http://localhost:${port}`);
