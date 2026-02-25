@@ -53,3 +53,7 @@ div.conversationSelect:hover {
     cursor: pointer;
     background-color: rgb(50, 50, 50);
 }
+
+div.sideContent {
+    border-top: 1px solid white;
+}
