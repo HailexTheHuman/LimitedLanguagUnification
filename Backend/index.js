@@ -28,6 +28,11 @@ app.post("/createUser", async (req, res) => {
     res.json(await DAL.createUser(username, password))
 })
 
+app.post("/setConversationHistory", async (req, res) => {
+    const { username, conversation } = req.body;
+    res.json(await DAL.setConversationHistory(username, conversation))
+})
+
 
 function setup() {
     app.listen(port, () => {

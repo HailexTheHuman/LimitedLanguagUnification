@@ -166,6 +166,19 @@ app.post('/sendPrompt', async (req, res) => {
     res.json(await response);
 })
 
+
+app.post('/setConversationHistory', async (req, res) => {
+    const { username, conversation } = req.body;
+    const response = await fetch('http://localhost:3001/setConversationHistory', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username: username, conversation: conversation })
+    });
+    res.json(await response.json());
+})
+
 function setup() {
     app.listen(port, () => {
         console.log(`Server running at http://localhost:${port}`);

@@ -98,6 +98,15 @@ async function getUserByUsername(username) {
     }
 }
 
+async function setConversationHistory(username, conversation) {
+    try {
+        await client.connect();
+        await client.db("LLU").collection("users").updateOne({username: username}, {$set: {conversations: conversation}});
+    } finally {
+        await client.close();
+    }
+}
+
 async function getResponse(conversation, prompt, model, responsePrefix="", params={}) {
     let context = []
 
@@ -158,8 +167,25 @@ exports.createUser = createUser;
 exports.getUsers = getUsers;
 exports.getUserByUsername = getUserByUsername;
 exports.getResponse = getResponse;
+exports.setConversationHistory = setConversationHistory;
 
 //testConnection();
 
 
 //getResponse([], "what is cake?", 'openrouter/free', '', {max_tokens:10}).then(console.log);
+
+setConversationHistory("admin", [
+    {
+        name: "weird salad conversation",
+        messages: [
+            {
+                sender: "admin",
+                text: "I like salad"
+            },
+            {
+                sender: "model",
+                text: "I like salad too!"
+            }
+        ]
+    }
+])

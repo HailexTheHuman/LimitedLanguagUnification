@@ -93,6 +93,13 @@ sendButton.addEventListener("click", async () => {
 
     modelMessage.classList.add("modelMessage")
     conversation.appendChild(modelMessage)
+    fetch('/setConversationHistory', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username: user.username, conversation: conversationList })
+    })
 })
 
 
