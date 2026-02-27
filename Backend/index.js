@@ -24,8 +24,8 @@ app.post("/getUser", async (req, res) => {
 
 
 app.post("/createUser", async (req, res) => {
-    const { username, password } = req.body;
-    res.json(await DAL.createUser(username, password))
+    const { username, password, email } = req.body;
+    res.json(await DAL.createUser(username, password, email))
 })
 
 

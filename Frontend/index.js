@@ -3,7 +3,7 @@ const app = express();
 const port = 3000;
 const cookies = require('cookie-session');
 const bcrypt = require('bcrypt');
-const e = require('express');
+const mailer = require('nodemailer');
 
 console.log("Frontend started!")
 
@@ -51,7 +51,8 @@ app.get('/register', (req, res) => {
         let model = {
             username: '',
             password: '',
-            message: ''
+            message: '',
+            email: ''
         };
 
         res.render('register', model);
@@ -106,7 +107,7 @@ verifyPassword = (password, hash) => {
 app.post('/register', async (req, res) => {
     registerSuccessful = false;
     message = "";
-    const {username, password} = req.body;
+    const {username, password, email} = req.body;
     const encryptedPassword = encryptPassword(password);
     
 
@@ -129,7 +130,7 @@ app.post('/register', async (req, res) => {
             'Content-Type': 'application/json'
         },
 
-        body: JSON.stringify({ username: username, password: encryptedPassword })
+        body: JSON.stringify({ username: username, password: encryptedPassword, email: email })
         });
         const newUserData = await registeredUser.json();
         if (newUserData) {
@@ -145,7 +146,8 @@ app.post('/register', async (req, res) => {
         let model = {
             username: username,
             password: password,
-            message: message
+            message: message,
+            email: email
         };
         res.render('login', model);
     }
@@ -186,6 +188,49 @@ function setup() {
         console.log(`Server running at http://localhost:${port}`);
     });
 }
+
+
+
+
+const transporter = mailer.createTransport({
+    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
+
+
+
+
+const sendEmail = async (to, subject, text) => {
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: to,
+        subject: subject,
+        text: text,
+        html: `<p>${text}</p>`
+    };
+
+    const info = await new Promise((resolve, reject) => {
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log(error);
+                reject(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+                resolve(info);
+            }
+        });
+    });
+}
+
+
+
+
 
 exports.setup = setup;
 

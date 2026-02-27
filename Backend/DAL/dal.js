@@ -37,13 +37,13 @@ async function testConnection() {
     }
 }
 
-async function createUser(username, password) {
+async function createUser(username, password, email) {
     try {
         await client.connect();
         const newUser = {
             username: username,
             password: password,
-            email: "email@email.com",
+            email: email,
             conversations: [
                 {
                     name: `${username}'s first conversation`,
