@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const port = 3000;
 const cookies = require('cookie-session');
+const bcrypt = require('bcrypt');
+const e = require('express');
 
 console.log("Frontend started!")
 
@@ -59,6 +61,7 @@ app.get('/register', (req, res) => {
 app.post('/login', async (req, res) => {
     loginSuccessful = false;
     const { username, password } = req.body;
+    const encryptedPassword = encryptPassword(password);
     
 
     const user = await fetch('http://localhost:3001/getUser', {
@@ -67,11 +70,11 @@ app.post('/login', async (req, res) => {
             'Content-Type': 'application/json'
         },
 
-        body: JSON.stringify({ username: username, password: password })
+        body: JSON.stringify({ username: username, password: encryptedPassword })
     });
     const userData = await user.json();
     console.log(userData);
-    if (userData && userData.password === password) {
+    if (userData && verifyPassword(password, userData.password)) {
         loginSuccessful = true;
     }
     
@@ -79,6 +82,7 @@ app.post('/login', async (req, res) => {
         req.session.username = username;
         res.redirect('/main');
     } else {
+        console.log("encrypted password: " + encryptedPassword);
         req.session = null;
         let model = {
             username: username,
@@ -89,10 +93,21 @@ app.post('/login', async (req, res) => {
     }
 });
 
+function encryptPassword(password) {
+    const saltRounds = 10;
+    const salt = bcrypt.genSaltSync(saltRounds);
+    return bcrypt.hashSync(password, salt);
+}
+
+verifyPassword = (password, hash) => {
+    return bcrypt.compareSync(password, hash);
+}
+
 app.post('/register', async (req, res) => {
     registerSuccessful = false;
     message = "";
     const {username, password} = req.body;
+    const encryptedPassword = encryptPassword(password);
     
 
     const user = await fetch('http://localhost:3001/getUser', {
@@ -114,7 +129,7 @@ app.post('/register', async (req, res) => {
             'Content-Type': 'application/json'
         },
 
-        body: JSON.stringify({ username: username, password: password})
+        body: JSON.stringify({ username: username, password: encryptedPassword })
         });
         const newUserData = await registeredUser.json();
         if (newUserData) {
