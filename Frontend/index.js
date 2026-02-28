@@ -124,6 +124,7 @@ app.post('/register', async (req, res) => {
     if (userData) {
         message = "You already have an account"
     } else {
+        sendEmail(email, "Verification Email", "Thank you for registering for Limited Language Unification! Please verify your email to complete the registration process.");
         const registeredUser = await fetch('http://localhost:3001/createUser', {
         method: 'POST',
         headers: {
