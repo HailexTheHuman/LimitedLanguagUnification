@@ -17,6 +17,8 @@ require('dotenv').config();
 const password = process.env.MONGO_PASS;
 const uri = `mongodb+srv://cterry_db_user:${password}@cluster0.rqbyqym.mongodb.net/?appName=Cluster0`;
 
+
+
 const client = new MongoClient(uri, {
     serverApi: {
         version: ServerApiVersion.v1,
@@ -154,9 +156,13 @@ async function getResponse(conversation, prompt, model, responsePrefix="", param
     return { message };
 }
 
+let lastCall = Promise.resolve();
 
-
-
+function callMongo(method, params) {
+    const run = lastCall.then(() => method(...params));
+    lastCall = run.catch(() => {});
+    return run;
+}
 
 
 
@@ -168,24 +174,9 @@ exports.getUsers = getUsers;
 exports.getUserByUsername = getUserByUsername;
 exports.getResponse = getResponse;
 exports.setConversationHistory = setConversationHistory;
+exports.callMongo = callMongo;
 
 //testConnection();
 
 
 //getResponse([], "what is cake?", 'openrouter/free', '', {max_tokens:10}).then(console.log);
-
-setConversationHistory("admin", [
-    {
-        name: "weird salad conversation",
-        messages: [
-            {
-                sender: "admin",
-                text: "I like salad"
-            },
-            {
-                sender: "model",
-                text: "I like salad too!"
-            }
-        ]
-    }
-])

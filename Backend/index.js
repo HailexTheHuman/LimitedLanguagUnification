@@ -19,18 +19,18 @@ app.post("/generate", async (req, res) => {
 
 app.post("/getUser", async (req, res) => {
     const { username } = req.body;
-    res.json(await DAL.getUserByUsername(username))
+    res.json(await DAL.callMongo(DAL.getUserByUsername, [username]));
 })
 
 
 app.post("/createUser", async (req, res) => {
     const { username, password } = req.body;
-    res.json(await DAL.createUser(username, password))
+    res.json(await DAL.callMongo(DAL.createUser, [username, password]))
 })
 
 app.post("/setConversationHistory", async (req, res) => {
     const { username, conversation } = req.body;
-    res.json(await DAL.setConversationHistory(username, conversation))
+    res.json(await DAL.callMongo(DAL.setConversationHistory, [username, conversation]))
 })
 
 
