@@ -180,13 +180,13 @@ app.post('/sendPrompt', async (req, res) => {
 
 
 app.post('/setConversationHistory', async (req, res) => {
-    const { username, conversation } = req.body;
+    const { username, password, conversation } = req.body;
     const response = await fetch('http://localhost:3001/setConversationHistory', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ username: username, conversation: conversation })
+        body: JSON.stringify({ username: username, password: password, conversation: conversation })
     });
     res.json(await response.json());
 })

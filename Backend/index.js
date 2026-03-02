@@ -29,8 +29,16 @@ app.post("/createUser", async (req, res) => {
 })
 
 app.post("/setConversationHistory", async (req, res) => {
-    const { username, conversation } = req.body;
-    res.json(await DAL.callMongo(DAL.setConversationHistory, [username, conversation]))
+    const { username, password, conversation } = req.body;
+    const user = await DAL.callMongo(DAL.getUserByUsername, [username])
+    if (user.password === password) {
+        console.log("User Validated!")
+        res.json(await DAL.callMongo(DAL.setConversationHistory, [username, conversation]))
+    } else {
+        console.log("User Was Not Validated! Securuty was tested!")
+        res.json({message: "You dirty horrible person, I can't belive you would attempt such a thing, you are truly the scum of the earth"})
+    }
+
 })
 
 app.post("/getModels", async (req, res) => {
