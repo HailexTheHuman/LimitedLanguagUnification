@@ -104,6 +104,7 @@ async function setConversationHistory(username, conversation) {
     try {
         await client.connect();
         await client.db("LLU").collection("users").updateOne({username: username}, {$set: {conversations: conversation}});
+        return {sucess: true};
     } finally {
         await client.close();
     }
@@ -164,6 +165,40 @@ function callMongo(method, params) {
     return run;
 }
 
+async function getModels() {
+    try {
+        const response = await fetch("https://openrouter.ai/api/v1/models", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${process.env.OPEN_ROUTER}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = (await response.json()).data;
+
+        const returnData = [];
+        for (const model of data) {
+            returnData.push({
+                id: model.id,
+                name: model.name,
+                description: model.description,
+                isFree: (model.pricing.prompt === '0' && model.pricing.completion === '0')
+            });
+        }
+        console.log("DAL: " + JSON.stringify(returnData[0]));
+        return returnData;
+    } catch (error) {
+        console.error("Error fetching models:", error);
+        throw error;
+    }
+}
+
+
 
 
 
@@ -175,6 +210,7 @@ exports.getUserByUsername = getUserByUsername;
 exports.getResponse = getResponse;
 exports.setConversationHistory = setConversationHistory;
 exports.callMongo = callMongo;
+exports.getModels = getModels;
 
 //testConnection();
 

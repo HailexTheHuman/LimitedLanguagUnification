@@ -57,3 +57,7 @@ div.conversationSelect:hover {
 div.sideContent {
     border-top: 1px solid white;
 }
+
+.isFree {
+    color: limegreen;
+}

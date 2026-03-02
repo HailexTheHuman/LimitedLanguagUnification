@@ -19,10 +19,9 @@
                 <label for="modelSelection">Select Model</label>
                 <select name="model" id="modelSelection">
                     <option value="0" disabled selected>Choose a model</option>
-                    <option value="openrouter/free">Free Model</option>
-                    <option value="openai/gpt-5-nano">GPT</option>
-                    <option value="google/gemini-2.5-flash-lite">Gemini</option>
-                    <option value="anthropic/claude-3-haiku">Claude</option>
+                    <%for (let i = 0; i < models.length; i++) {%>
+                        <option value="<%= models[i].id%>" class="<%= models[i].isFree ? "isFree": "notFree"%>" title="<%= models[i].description%>"><%= models[i].name%></option>
+                    <%}%>
                 </select>
             </div>
             <div id="newConversation" class="conversationSelect">New Conversation</div>

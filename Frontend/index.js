@@ -146,7 +146,19 @@ app.get('/main', async (req, res) => {
             },
             body: JSON.stringify({ username: req.session.username })
         });
-        res.render('main', {user: await user.json()});
+        const models = await fetch('http://localhost:3001/getModels', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({})
+        })
+
+        let jsonResult = await models.json();
+
+        console.log(jsonResult[0]);
+
+        res.render('main', {user: await user.json(), models: jsonResult});
     } else {
         res.redirect('/login');
     }

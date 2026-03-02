@@ -33,6 +33,12 @@ app.post("/setConversationHistory", async (req, res) => {
     res.json(await DAL.callMongo(DAL.setConversationHistory, [username, conversation]))
 })
 
+app.post("/getModels", async (req, res) => {
+    console.log("Made it!")
+    const models = await DAL.getModels()
+    res.json(models);
+})
+
 
 function setup() {
     app.listen(port, () => {
