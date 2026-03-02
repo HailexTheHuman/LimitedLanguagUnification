@@ -22,10 +22,15 @@ app.post("/getUser", async (req, res) => {
     res.json(await DAL.getUserByUsername(username))
 })
 
+app.post("/verifyUser", async (req, res) => {
+    const { username } = req.body;
+    res.json(await DAL.verifyByUsername(username))
+})
+
 
 app.post("/createUser", async (req, res) => {
-    const { username, password, email } = req.body;
-    res.json(await DAL.createUser(username, password, email))
+    const { username, password, email, isVerified, verificationCode } = req.body;
+    res.json(await DAL.createUser(username, password, email, isVerified, verificationCode))
 })
 
 

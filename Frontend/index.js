@@ -109,6 +109,66 @@ app.get('/register', (req, res) => {
     }
 });
 
+
+app.get('/verify', (req, res) => {
+    if (req.session.username && req.session.isVerified) {
+        res.redirect('/main');
+    } else {
+        let model = {
+            verificationCode: ''
+        };
+
+        res.render('verify', model);
+    }
+});
+
+
+
+
+app.post('/verify', async (req, res) => {
+    let verifySuccessful = false;
+    const verificationCode = req.body.verificationCode;
+    
+
+    const user = await fetch('http://localhost:3001/getUser', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify({ username: req.session.username })
+    });
+    const userData = await user.json();
+    console.log(userData);
+    if (userData && verifyPassword(verificationCode+"", userData.verificationCode)) {
+    // if (userData && verificationCode == userData.verificationCode) {
+        const verifiedUser = await fetch('http://localhost:3001/verifyUser', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify({ username: req.session.username })
+        });
+        console.log(`verifiedUser: `, verifiedUser)
+        verifySuccessful = true;
+    }
+    
+    if (verifySuccessful) {
+        req.session.isVerified = true;
+        res.redirect('/main');
+    } else {
+        // req.session = null;
+        let model = {
+            verificationCode: verificationCode
+        };
+        res.render('verify', model);
+    }
+});
+
+
+
+
 app.post('/login', async (req, res) => {
     loginSuccessful = false;
     const { username, password } = req.body;
@@ -131,6 +191,7 @@ app.post('/login', async (req, res) => {
     
     if (loginSuccessful) {
         req.session.username = username;
+        req.session.isVerified = userData.isVerified;
         res.redirect('/main');
     } else {
         console.log("encrypted password: " + encryptedPassword);
@@ -174,26 +235,28 @@ app.post('/register', async (req, res) => {
     if (userData) {
         message = "You already have an account"
     } else {
-        console.log(`from: ${process.env.EMAIL_USER}, to: ${email}`)
+        console.log(`from: ${process.env.EMAIL_USER}, to: ${email}`);
+        let verificationCode = Math.floor(Math.random()*9999);
         const info = await transporter.sendMail({
             from: `"Limited Language Unification" <noreply@llu.app>`,
             to: email,
             subject: "Verification Email",
             text: "Thank you for registering for Limited Language Unification! Please verify your email to complete the registration process.",
-            html: `<p>${"Thank you for registering for Limited Language Unification! Please verify your email to complete the registration process."}</p>`,
+            html: `<p>Thank you for registering for Limited Language Unification! Please verify your email to complete the registration process. Use the following code: </p><h2>${verificationCode}`,
         })
         .then((info) => {
             console.log("Message sent: %s", info.messageId);
             // Get a URL to preview the message in Ethereal's web interface
             console.log("Preview URL: %s", mailer.getTestMessageUrl(info));
         })
+        let encryptedVerificationCode = encryptPassword(verificationCode+"");
         const registeredUser = await fetch('http://localhost:3001/createUser', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
 
-        body: JSON.stringify({ username: username, password: encryptedPassword, email: email })
+        body: JSON.stringify({ username: username, password: encryptedPassword, email: email, isVerified: false, verificationCode: encryptedVerificationCode })
         });
         const newUserData = await registeredUser.json();
         if (newUserData) {
@@ -203,7 +266,7 @@ app.post('/register', async (req, res) => {
     
     if (registerSuccessful) {
         req.session.username = username;
-        res.redirect('/main');
+        res.redirect('/verify');
     } else {
         req.session = null;
         let model = {
@@ -218,7 +281,7 @@ app.post('/register', async (req, res) => {
 
 
 app.get('/main', async (req, res) => {
-    if (req.session.username) {
+    if (req.session.username && req.session.isVerified) {
         const user = await fetch('http://localhost:3001/getUser', {
             method: 'POST',
             headers: {
@@ -227,6 +290,8 @@ app.get('/main', async (req, res) => {
             body: JSON.stringify({ username: req.session.username })
         });
         res.render('main', {user: await user.json()});
+    } else if (req.session.username){
+        res.redirect('/verify');
     } else {
         res.redirect('/login');
     }

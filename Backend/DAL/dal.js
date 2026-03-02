@@ -37,13 +37,15 @@ async function testConnection() {
     }
 }
 
-async function createUser(username, password, email) {
+async function createUser(username, password, email, isVerified, verificationCode) {
     try {
         await client.connect();
         const newUser = {
             username: username,
             password: password,
             email: email,
+            isVerified: isVerified,
+            verificationCode, verificationCode,
             conversations: [
                 {
                     name: `${username}'s first conversation`,
@@ -79,6 +81,20 @@ async function createUser(username, password, email) {
         await client.close();
     }
 }
+
+
+async function verifyByUsername(username) {
+    try {
+        await client.connect();
+    await client.db("LLU").collection("users").updateOne(
+        { username: username },
+        { $set: { isVerified: true } }
+    );
+    } finally {
+        await client.close();
+    }
+}
+
 
 async function getUsers() {
     try {
@@ -158,6 +174,7 @@ exports.createUser = createUser;
 exports.getUsers = getUsers;
 exports.getUserByUsername = getUserByUsername;
 exports.getResponse = getResponse;
+exports.verifyByUsername = verifyByUsername;
 
 //testConnection();
 
