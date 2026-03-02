@@ -4,6 +4,8 @@ const port = 3000;
 const cookies = require('cookie-session');
 const bcrypt = require('bcrypt');
 const mailer = require('nodemailer');
+require('dotenv').config();
+
 
 console.log("Frontend started!")
 
@@ -17,6 +19,54 @@ app.use(cookies({
     secret: 'notCookieMonster',
     maxAge: 1000 * 60 * 60 * 2 //2 hours of cookies before expiring
 }));
+
+
+// let transporter;
+// mailer.createTestAccount((err, account) => {
+//     if (err) {
+//         console.error("Failed to create a testing account. " + err.message);
+//         return;
+//     }
+
+//     // Create a transporter using the Ethereal test account credentials
+//     transporter = mailer.createTransport({
+//         host: account.smtp.host,
+//         port: account.smtp.port,
+//         secure: account.smtp.secure,
+//         auth: {
+//         user: account.user,
+//         pass: account.pass,
+//         },
+//     });
+
+//     // Send a test message
+//     transporter.sendMail({
+//         from: "Example App <no-reply@example.com>",
+//         to: "user@example.com",
+//         subject: "Hello from tests",
+//         text: "This message was sent from a Node.js integration test.",
+//     })
+//     .then((info) => {
+//         console.log("Message sent: %s", info.messageId);
+//         // Get a URL to preview the message in Ethereal's web interface
+//         console.log("Preview URL: %s", mailer.getTestMessageUrl(info));
+//     })
+//     .catch(console.error);
+// });
+
+
+const transporter = mailer.createTransport({
+    service: 'Gmail',
+    // host: 'smtp.ethereal.com',
+    // port: 587,
+    // secure: false,
+    // authMethod: "LOGIN",
+    auth: {
+        // type: "login",
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    },
+});
 
 
 app.get('/', (req, res) => {
@@ -124,7 +174,19 @@ app.post('/register', async (req, res) => {
     if (userData) {
         message = "You already have an account"
     } else {
-        sendEmail(email, "Verification Email", "Thank you for registering for Limited Language Unification! Please verify your email to complete the registration process.");
+        console.log(`from: ${process.env.EMAIL_USER}, to: ${email}`)
+        const info = await transporter.sendMail({
+            from: `"Limited Language Unification" <noreply@llu.app>`,
+            to: email,
+            subject: "Verification Email",
+            text: "Thank you for registering for Limited Language Unification! Please verify your email to complete the registration process.",
+            html: `<p>${"Thank you for registering for Limited Language Unification! Please verify your email to complete the registration process."}</p>`,
+        })
+        .then((info) => {
+            console.log("Message sent: %s", info.messageId);
+            // Get a URL to preview the message in Ethereal's web interface
+            console.log("Preview URL: %s", mailer.getTestMessageUrl(info));
+        })
         const registeredUser = await fetch('http://localhost:3001/createUser', {
         method: 'POST',
         headers: {
@@ -189,48 +251,6 @@ function setup() {
         console.log(`Server running at http://localhost:${port}`);
     });
 }
-
-
-
-
-const transporter = mailer.createTransport({
-    service: 'gmail',
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
-});
-
-
-
-
-const sendEmail = async (to, subject, text) => {
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: to,
-        subject: subject,
-        text: text,
-        html: `<p>${text}</p>`
-    };
-
-    const info = await new Promise((resolve, reject) => {
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.log(error);
-                reject(error);
-            } else {
-                console.log('Email sent: ' + info.response);
-                resolve(info);
-            }
-        });
-    });
-}
-
-
-
 
 
 exports.setup = setup;
