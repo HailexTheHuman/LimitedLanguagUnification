@@ -22,10 +22,15 @@ app.post("/getUser", async (req, res) => {
     res.json(await DAL.callMongo(DAL.getUserByUsername, [username]));
 })
 
+app.post("/verifyUser", async (req, res) => {
+    const { username } = req.body;
+    res.json(await DAL.verifyByUsername(username))
+})
+
 
 app.post("/createUser", async (req, res) => {
-    const { username, password } = req.body;
-    res.json(await DAL.callMongo(DAL.createUser, [username, password]))
+    const { username, password, email, isVerified, verificationCode } = req.body;
+    res.json(await DAL.callMongo(DAL.createUser, [username, password, email, isVerified, verificationCode]))
 })
 
 app.post("/setConversationHistory", async (req, res) => {

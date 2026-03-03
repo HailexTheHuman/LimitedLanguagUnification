@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/main.css">
+    <title>Verify</title>
+</head>
+<body>
+    <div class="verify-container">
+        <h2>Verify</h2>
+        <form action="/verify" method="POST">
+            <label for="verify">Verification Code:</label>
+            <input type="text" id="verificationCode" name="verificationCode" value="<%= verificationCode %>" required>
+
+            <button type="submit">Verify</button>
+        </form>
+    </div>
+</body>
+</html>

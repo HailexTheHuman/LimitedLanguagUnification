@@ -39,13 +39,15 @@ async function testConnection() {
     }
 }
 
-async function createUser(username, password) {
+async function createUser(username, password, email, isVerified, verificationCode) {
     try {
         await client.connect();
         const newUser = {
             username: username,
             password: password,
-            email: "email@email.com",
+            email: email,
+            isVerified: isVerified,
+            verificationCode, verificationCode,
             conversations: [
                 {
                     name: `${username}'s first conversation`,
@@ -81,6 +83,20 @@ async function createUser(username, password) {
         await client.close();
     }
 }
+
+
+async function verifyByUsername(username) {
+    try {
+        await client.connect();
+    await client.db("LLU").collection("users").updateOne(
+        { username: username },
+        { $set: { isVerified: true } }
+    );
+    } finally {
+        await client.close();
+    }
+}
+
 
 async function getUsers() {
     try {
@@ -211,6 +227,7 @@ exports.getResponse = getResponse;
 exports.setConversationHistory = setConversationHistory;
 exports.callMongo = callMongo;
 exports.getModels = getModels;
+exports.verifyByUsername = verifyByUsername;
 
 //testConnection();
 
