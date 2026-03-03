@@ -24,7 +24,7 @@ app.post("/getUser", async (req, res) => {
 
 app.post("/verifyUser", async (req, res) => {
     const { username } = req.body;
-    res.json(await DAL.verifyByUsername(username))
+    res.json(await DAL.callMongo(DAL.verifyByUsername, [username]));
 })
 
 
