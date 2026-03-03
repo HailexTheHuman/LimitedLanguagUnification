@@ -47,35 +47,8 @@ async function createUser(username, password, email, isVerified, verificationCod
             password: password,
             email: email,
             isVerified: isVerified,
-            verificationCode, verificationCode,
-            conversations: [
-                {
-                    name: `${username}'s first conversation`,
-                    messages: [
-                        {
-                            sender: username,
-                            text: "bye World!"
-                        },
-                        {
-                            sender: "model",
-                            text: "buy Back!"
-                        }
-                    ]
-                },
-                {
-                    name: `${username}'s second conversation`,
-                    messages: [
-                        {
-                            sender: username,
-                            text: "I sure hope that I survive the AI uprising"
-                        },
-                        {
-                            sender: "model",
-                            text: "You won't......"
-                        }
-                    ]
-                }
-            ]
+            verificationCode: verificationCode,
+            conversations: []
         }
         await client.db("LLU").collection("users").insertOne(newUser);
         return await client.db("LLU").collection("users").findOne({username: username});
