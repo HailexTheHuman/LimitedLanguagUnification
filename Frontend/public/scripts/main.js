@@ -15,6 +15,12 @@ const prefixInput = document.getElementById("responsePrefix")
 const temperatureInput = document.getElementById("temperature")
 const topPInput = document.getElementById("topP")
 const topKInput = document.getElementById("topK")
+const frecPenaltyInput = document.getElementById("frecPen")
+const presPenaltyInput = document.getElementById("presPen")
+const repeatPenaltyInput = document.getElementById("repPen")
+const minPInput = document.getElementById("minP")
+const maxAInput = document.getElementById("maxA")
+const verboseInput = document.getElementById("verbose")
 
 
 
@@ -58,6 +64,77 @@ topKInput.addEventListener("blur", () => {
     }
     topKInput.value = Math.floor(topKInput.value)
 })
+
+frecPenaltyInput.addEventListener("blur", () => {
+    if (frecPenaltyInput.value < -2) frecPenaltyInput.value = -2
+    if (frecPenaltyInput.value > 2) frecPenaltyInput.value = 2
+
+    try {
+        parseFloat(frecPenaltyInput.value)
+
+        if (frecPenaltyInput.value === '') {
+            frecPenaltyInput.value = 0.0
+        }
+    } catch (e) {
+        frecPenaltyInput.value = 0.0
+    }
+})
+
+presPenaltyInput.addEventListener("blur", () => {
+    if (presPenaltyInput.value < -2) presPenaltyInput.value = -2
+    if (presPenaltyInput.value > 2) presPenaltyInput.value = 2
+    try {
+        parseFloat(presPenaltyInput.value)
+
+        if (presPenaltyInput.value === '') {
+            presPenaltyInput.value = 0.0
+        }
+    } catch (e) {
+        presPenaltyInput.value = 0.0
+    }
+})
+
+repeatPenaltyInput.addEventListener("blur", () => {
+    if (repeatPenaltyInput.value < 0) repeatPenaltyInput.value = 0
+    if (repeatPenaltyInput.value > 2) repeatPenaltyInput.value = 2
+    try {
+        parseFloat(repeatPenaltyInput.value)
+
+        if (repeatPenaltyInput.value === '') {
+            repeatPenaltyInput.value = 1.0
+        }
+    } catch (e) {
+        repeatPenaltyInput.value = 1.0
+    }
+})
+
+minPInput.addEventListener("blur", () => {
+    if (minPInput.value < 0) minPInput.value = 0
+    if (minPInput.value > 1) minPInput.value = 1
+    try {
+        parseFloat(minPInput.value)
+        if (minPInput.value === '') {
+            minPInput.value = 0.0
+        }
+    } catch (e) {
+        minPInput.value = 0.0
+    }
+})
+
+maxAInput.addEventListener("blur", () => {
+    if (maxAInput.value < 0) maxAInput.value = 0
+    if (maxAInput.value > 1) maxAInput.value = 1
+    try {
+        parseFloat(maxAInput.value)
+        if (maxAInput.value === '') {
+            maxAInput.value = 0.0
+        }
+    } catch (e) {
+        maxAInput.value = 0.0
+    }
+})
+
+
 
 
 const conversationList = []
@@ -133,7 +210,13 @@ sendButton.addEventListener("click", async () => {
         const params = {
             temperature: parseFloat(temperatureInput.value),
             top_p: parseFloat(topPInput.value),
-            top_k: parseInt(topKInput.value)
+            top_k: parseInt(topKInput.value),
+            frequency_penalty: parseFloat(frecPenaltyInput.value),
+            presence_penalty: parseFloat(presPenaltyInput.value),
+            repetition_penalty: parseFloat(repeatPenaltyInput.value),
+            min_p: parseFloat(minPInput.value),
+            top_a: parseFloat(maxAInput.value),
+            verbose: verboseInput.value,
         }
         const response = await fetch('/sendPrompt', {
             method: 'POST',

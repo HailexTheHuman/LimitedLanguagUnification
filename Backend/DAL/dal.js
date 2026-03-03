@@ -147,10 +147,10 @@ async function getResponse(conversation, prompt, model, responsePrefix="", param
     for (const [key, value] of Object.entries(params)) {
         fetchParams.body[key] = value;
     }
-    console.log("Params: " + fetchParams.body);
 
 
-    fetchParams.body = JSON.stringify(fetchParams.body);
+    fetchParams.body = JSON.stringify(fetchParams.body, null, 2);
+    console.log(fetchParams.body);
 
 
     const res = await fetch('https://openrouter.ai/api/v1/chat/completions', fetchParams);
