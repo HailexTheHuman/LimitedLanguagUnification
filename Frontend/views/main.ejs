@@ -31,6 +31,41 @@
             <div id="conversation" class="conversation"></div>
             <input type="text" id="userInput" placeholder="Enter your message here...">
             <button id="sendButton">Send</button>
+
+
+            <div class="dropdown">
+                <input type="checkbox" id="menu-toggle" class="menu-toggle">
+                <label for="menu-toggle" class="menu-button">Options</label>
+
+                <div class="menu">
+                    <p>Advanced Model Options</p>
+                    <label for="roleSelection">Role</label>
+                    <select name="role" id="roleSelection" title="the role the user will be assigned when sending messages">
+                        <option value="<%= user.username%>">User</option>
+                        <option value="model">Model</option>
+                        <option value="system">System</option>
+                    </select>
+                    <br>
+                    <label for="modelResponds">Model Responds?</label>
+                    <input type="checkbox" id="modelResponds" name="modelResponds" title="whether the model should respond to the user" checked>
+                    <br>
+                    <label for="canEdit">Can Edit Conversation?</label>
+                    <input type="checkbox" id="canEdit" name="canEdit" title="whether the user can edit the conversation">
+                    <br>
+                    <br>
+                    <label for="responsePrefix">Response Prefix</label>
+                    <input type="text" id="responsePrefix" name="responsePrefix" title="the prefix that will be added to the beginning of the model's response">
+                    <br>
+                    <label for="temperature">Temperature</label>
+                    <input type="number" id="temperature" name="temperature" title="This setting influences the variety in the model’s responses. Lower values lead to more predictable and typical responses, while higher values encourage more diverse and less common responses. At 0, the model always gives the same response for a given input." min="0.0" max="2.0" step="0.1" value="1.0">
+                    <br>
+                    <label for="topP">Top P</label>
+                    <input type="number" id="topP" name="topP" title="This setting limits the model’s choices to a percentage of likely tokens: only the top tokens whose probabilities add up to P. A lower value makes the model’s responses more predictable, while the default setting allows for a full range of token choices. Think of it like a dynamic Top-K." min="0.0" max="1.0" step="0.1" value="1.0">
+                    <br>
+                    <label for="topK">Top K</label>
+                    <input type="number" id="topK" name="topK" title="This limits the model’s choice of tokens at each step, making it choose from a smaller set. A value of 1 means the model will always pick the most likely next token, leading to predictable results. By default this setting is disabled, making the model to consider all choices." min="0" step="1" value="0">
+                </div>
+            </div>
         </main>
     </div>
 </body>

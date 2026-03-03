@@ -110,18 +110,18 @@ async function setConversationHistory(username, conversation) {
     }
 }
 
-async function getResponse(conversation, prompt, model, responsePrefix="", params={}) {
+async function getResponse(conversation, prompt, model, responsePrefix="", params={}, role="user") {
     let context = []
 
     for (const message of conversation) {
         context.push({
-            role: message.sender === "model" ? "assistant" : "user",
+            role: message.sender === "model" ? "assistant" : ( message.sender === "system" ? "system" : "user"),
             content: message.text
         })
     }
 
     context.push({
-        role: "user",
+        role: role === "model" ? "assistant" : ( role === "system" ? "system" : "user"),
         content: prompt
     })
     if (responsePrefix !== "") context.push(
@@ -137,16 +137,21 @@ async function getResponse(conversation, prompt, model, responsePrefix="", param
             Authorization: `Bearer ${process.env.OPEN_ROUTER}`,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
+        body: {
             model: model,
             //max_tokens: 100,
             messages: context
-        }),
+        },
     }
 
     for (const [key, value] of Object.entries(params)) {
-        fetchParams[key] = value;
+        fetchParams.body[key] = value;
     }
+    console.log("Params: " + fetchParams.body);
+
+
+    fetchParams.body = JSON.stringify(fetchParams.body);
+
 
     const res = await fetch('https://openrouter.ai/api/v1/chat/completions', fetchParams);
     if (res.status !== 200) {

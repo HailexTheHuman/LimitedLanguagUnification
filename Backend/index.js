@@ -11,8 +11,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.post("/generate", async (req, res) => {
 
-    const { context, prompt, model, resPrefix, params} = req.body;
-    const response = await DAL.getResponse(context, prompt, model, resPrefix, params);
+    const { context, prompt, model, resPrefix, params, role} = req.body;
+    const response = await DAL.getResponse(context, prompt, model, resPrefix, params, role);
 
     res.json(response)
 })

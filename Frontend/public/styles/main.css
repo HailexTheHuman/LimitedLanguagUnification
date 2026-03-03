@@ -30,6 +30,7 @@ div.sideBanner {
 main {
     padding: 10px;
     overflow-y: auto;
+    min-width: 1200px;
 }
 
 div.modelMessage {
@@ -42,6 +43,12 @@ div.userMessage {
     padding: 10px;
     margin: 10px;
     background-color: rgb(0, 0, 50);
+}
+
+div.systemMessage {
+    padding: 10px;
+    margin: 10px;
+    background-color: rgb(0, 50, 0);
 }
 
 div.conversationSelect {
@@ -60,4 +67,39 @@ div.sideContent {
 
 .isFree {
     color: limegreen;
+}
+
+
+
+
+
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.menu-toggle {
+    display: none;
+}
+
+.menu-button {
+    padding: 10px 15px;
+    cursor: pointer;
+    border: 1px solid white;
+}
+
+.menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 500px;
+    box-shadow: 0 4px 8px rgba(255,255,255,0.2);
+    border: 1px solid white;
+}
+
+
+.menu-toggle:checked + .menu-button + .menu {
+    display: block;
 }
