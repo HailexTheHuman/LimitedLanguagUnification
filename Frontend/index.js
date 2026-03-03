@@ -310,14 +310,14 @@ app.get('/main', async (req, res) => {
 })
 
 app.post('/sendPrompt', async (req, res) => {
-    const { context, prompt, model, resPrefix, params } = req.body;
+    const { context, prompt, model, resPrefix, params, role } = req.body;
 
     const response = await (await fetch('http://localhost:3001/generate', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ context: context, prompt: prompt, model: model, resPrefix: resPrefix, params: params })
+        body: JSON.stringify({ context: context, prompt: prompt, model: model, resPrefix: resPrefix, params: params, role: role })
     })).json();
 
     res.json(await response);

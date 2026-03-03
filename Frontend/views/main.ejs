@@ -31,6 +31,64 @@
             <div id="conversation" class="conversation"></div>
             <input type="text" id="userInput" placeholder="Enter your message here...">
             <button id="sendButton">Send</button>
+
+
+            <div class="dropdown">
+                <input type="checkbox" id="menu-toggle" class="menu-toggle">
+                <label for="menu-toggle" class="menu-button">Options</label>
+
+                <div class="menu">
+                    <p>Advanced Model Options</p>
+                    <label for="roleSelection">Role</label>
+                    <select name="role" id="roleSelection" title="the role the user will be assigned when sending messages">
+                        <option value="<%= user.username%>">User</option>
+                        <option value="model">Model</option>
+                        <option value="system">System</option>
+                    </select>
+                    <br>
+                    <label for="modelResponds">Model Responds?</label>
+                    <input type="checkbox" id="modelResponds" name="modelResponds" title="whether the model should respond to the user" checked>
+                    <br>
+                    <label for="canEdit">Can Edit Conversation?</label>
+                    <input type="checkbox" id="canEdit" name="canEdit" title="whether the user can edit the conversation">
+                    <br>
+                    <br>
+                    <label for="responsePrefix">Response Prefix</label>
+                    <input type="text" id="responsePrefix" name="responsePrefix" title="the prefix that will be added to the beginning of the model's response">
+                    <br>
+                    <label for="temperature">Temperature</label>
+                    <input type="number" id="temperature" name="temperature" title="This setting influences the variety in the model’s responses. Lower values lead to more predictable and typical responses, while higher values encourage more diverse and less common responses. At 0, the model always gives the same response for a given input." min="0.0" max="2.0" step="0.1" value="1.0">
+                    <br>
+                    <label for="topP">Top P</label>
+                    <input type="number" id="topP" name="topP" title="This setting limits the model’s choices to a percentage of likely tokens: only the top tokens whose probabilities add up to P. A lower value makes the model’s responses more predictable, while the default setting allows for a full range of token choices. Think of it like a dynamic Top-K." min="0.0" max="1.0" step="0.1" value="1.0">
+                    <br>
+                    <label for="topK">Top K</label>
+                    <input type="number" id="topK" name="topK" title="This limits the model’s choice of tokens at each step, making it choose from a smaller set. A value of 1 means the model will always pick the most likely next token, leading to predictable results. By default this setting is disabled, making the model to consider all choices." min="0" step="1" value="0">
+                    <br>
+                    <label for="frecPen">Frequency Penalty</label>
+                    <input type="number" id="frecPen" name="frecPen" title="This setting aims to control the repetition of tokens based on how often they appear in the input. It tries to use less frequently those tokens that appear more in the input, proportional to how frequently they occur. Token penalty scales with the number of occurrences. Negative values will encourage token reuse." min="-2.0" max="2.0" step="0.1" value="0.0">
+                    <br>
+                    <label for="presPen">Presence Penalty</label>
+                    <input type="number" id="presPen" name="presPen" title="Adjusts how often the model repeats specific tokens already used in the input. Higher values make such repetition less likely, while negative values do the opposite. Token penalty does not scale with the number of occurrences. Negative values will encourage token reuse." min="-2.0" max="2.0" step="0.1" value="0.0">
+                    <br>
+                    <label for="repPen">Repetition Penalty</label>
+                    <input type="number" id="repPen" name="repPen" title="Helps to reduce the repetition of tokens from the input. A higher value makes the model less likely to repeat tokens, but too high a value can make the output less coherent (often with run-on sentences that lack small words). Token penalty scales based on original token’s probability." min="0.0" max="2.0" step="0.1" value="1.0">
+                    <br>
+                    <label for="minP">Min P</label>
+                    <input type="number" id="minP" name="minP" title="Represents the minimum probability for a token to be considered, relative to the probability of the most likely token. (The value changes depending on the confidence level of the most probable token.) If your Min-P is set to 0.1, that means it will only allow for tokens that are at least 1/10th as probable as the best possible option." min="0.0" max="1.0" step="0.1" value="0.0">
+                    <br>
+                    <label for="maxA">Top A</label>
+                    <input type="number" id="maxA" name="maxA" title="Consider only the top tokens with “sufficiently high” probabilities based on the probability of the most likely token. Think of it like a dynamic Top-P. A lower Top-A value focuses the choices based on the highest probability token but with a narrower scope. A higher Top-A value does not necessarily affect the creativity of the output, but rather refines the filtering process based on the maximum probability." min="0.0" max="1.0" step="0.1" value="0.0">
+                    <br>
+                    <label for="verbose">Verbose</label>
+                    <select name="verbose" id="verbose">
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                        <option value="high">High</option>
+                        <option value="max">Max</option>
+                    </select>
+                </div>
+            </div>
         </main>
     </div>
 </body>
