@@ -49,9 +49,10 @@ div.sideBanner {
 }
 
 main {
+    align-content: start;
     padding: 10px;
     overflow-y: auto;
-    min-height: 20rem;
+    min-height: 40rem;
     width: 70%;
     overflow-wrap: anywhere;
     /* min-width: 1200px; */
