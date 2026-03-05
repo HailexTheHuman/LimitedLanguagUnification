@@ -15,10 +15,15 @@ require('dotenv').config();
 
 
 const password = process.env.MONGO_PASS;
+/**
+ * this is the connection string for the mongo database
+ * @type {string}*/
 const uri = `mongodb+srv://cterry_db_user:${password}@cluster0.rqbyqym.mongodb.net/?appName=Cluster0`;
 
 
-
+/**
+ * this is the client for the mongo database
+ * @type {MongoClient}*/
 const client = new MongoClient(uri, {
     serverApi: {
         version: ServerApiVersion.v1,
@@ -26,6 +31,15 @@ const client = new MongoClient(uri, {
         deprecationErrors: true,
     }
 });
+
+/**
+ * this is a test function to test the connection to the database.
+ * it is copied from the mongo docs.
+ * will print a message to console if successful
+ * <br>
+ * use {@link callMongo} to safely call this function
+ * @returns {Promise<void>}
+ */
 async function testConnection() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
@@ -39,6 +53,17 @@ async function testConnection() {
     }
 }
 
+/**
+ * this is a function to create a new user and add them to the database
+ * <br>
+ * use {@link callMongo} to safely call this function
+ * @param username the username of the user
+ * @param password the hashed and salted password of the user
+ * @param email the email of the user
+ * @param isVerified whether the user has verified their email
+ * @param verificationCode the hashed and salted verification code of the user
+ * @returns {Promise<Document & {_id: InferIdType<Document>}>}
+ */
 async function createUser(username, password, email, isVerified, verificationCode) {
     try {
         await client.connect();
@@ -70,7 +95,16 @@ async function verifyByUsername(username) {
     }
 }
 
-
+/**
+ * this is a function to get all users from the database; it is intended for testing purposes.
+ * <br>
+ * use {@link getUserByUsername} to get a specific user
+ * <br>
+ * this function will print all users to the console
+ * <br>
+ * use {@link callMongo} to safely call this function
+ * @returns {Promise<void>}
+ */
 async function getUsers() {
     try {
         await client.connect();
@@ -80,6 +114,13 @@ async function getUsers() {
     }
 }
 
+/**
+ * this is a function to get a specific user from the database
+ * <br>
+ * use {@link callMongo} to safely call this function
+ * @param username the username of the user to get
+ * @returns {Promise<Document & {_id: InferIdType<Document>}>} a promise that resolves to the user document
+ */
 async function getUserByUsername(username) {
     try {
         await client.connect();
@@ -89,6 +130,15 @@ async function getUserByUsername(username) {
     }
 }
 
+/**
+ * this function sets the conversation history of a user, you should validate the password before calling this function
+ * <br>
+ * use {@link callMongo} to safely call this function
+ *
+ * @param username the username of the user to set the conversation history for
+ * @param conversation an array of conversations to be set
+ * @returns {Promise<{sucess: boolean}>} a promise that resolves to an object containing a success flag
+ */
 async function setConversationHistory(username, conversation) {
     try {
         await client.connect();
@@ -96,9 +146,21 @@ async function setConversationHistory(username, conversation) {
         return {sucess: true};
     } finally {
         await client.close();
+        return {sucess: false};
     }
 }
 
+/**
+ * this function gets a response from the openrouter api.
+ * it will access a given model with the given parameters and return the response.
+ * @param conversation an array of messages to be used as context for the response
+ * @param prompt the prompt to be used for the response, will be appended to the end of the conversation
+ * @param model the model to get the response from
+ * @param responsePrefix a prefix to be added to the beginning of the model's response. will be appended to the end of the conversation
+ * @param params additional parameters to be passed to the model
+ * @param role the role taken when prompting the model, can be "user", "system", or "model"
+ * @returns {Promise<{message: string}>} a promise that resolves to an object containing the response from the model
+ */
 async function getResponse(conversation, prompt, model, responsePrefix="", params={}, role="user") {
     let context = []
 
@@ -151,14 +213,40 @@ async function getResponse(conversation, prompt, model, responsePrefix="", param
     return { message };
 }
 
+/**
+ * this is a promise that is used as a queue to prevent multiple calls to the mongo database at the same time.
+ * @type {Promise<void>}
+ */
 let lastCall = Promise.resolve();
 
+/**
+ * this is a function to safely call the mongo database.
+ * it will prevent multiple calls to the mongo database at the same time.
+ * you should use this function as a wrapper around all calls to the mongo database.
+ *
+ *
+ * @param method the method to call on the mongo database
+ * @param params the parameters to pass to the method, in order
+ * @returns {Promise<*>} a promise that resolves to the result of the method called
+ */
 function callMongo(method, params) {
     const run = lastCall.then(() => method(...params));
     lastCall = run.catch(() => {});
     return run;
 }
 
+/**
+ * a function to get all models from the openrouter api.
+ * the models it returns are used to generate responses from the {@link getResponse} function.
+ *
+ * @returns {Promise<*[]>} a promise that resolves to an array of model objects, each object is as follows: <br>
+ * {<br>
+ *     id: string,<br>
+ *     name: string,<br>
+ *     description: string,<br>
+ *     isFree: boolean<br>
+ * }
+ */
 async function getModels() {
     try {
         const response = await fetch("https://openrouter.ai/api/v1/models", {
