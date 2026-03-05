@@ -57,11 +57,11 @@ async function testConnection() {
  * this is a function to create a new user and add them to the database
  * <br>
  * use {@link callMongo} to safely call this function
- * @param username the username of the user
- * @param password the hashed and salted password of the user
- * @param email the email of the user
- * @param isVerified whether the user has verified their email
- * @param verificationCode the hashed and salted verification code of the user
+ * @param {string} username the username of the user
+ * @param {string} password the hashed and salted password of the user
+ * @param {string} email the email of the user
+ * @param {boolean} isVerified whether the user has verified their email
+ * @param {string} verificationCode the hashed and salted verification code of the user
  * @returns {Promise<Document & {_id: InferIdType<Document>}>}
  */
 async function createUser(username, password, email, isVerified, verificationCode) {
@@ -118,7 +118,7 @@ async function getUsers() {
  * this is a function to get a specific user from the database
  * <br>
  * use {@link callMongo} to safely call this function
- * @param username the username of the user to get
+ * @param {string} username the username of the user to get
  * @returns {Promise<Document & {_id: InferIdType<Document>}>} a promise that resolves to the user document
  */
 async function getUserByUsername(username) {
@@ -135,8 +135,8 @@ async function getUserByUsername(username) {
  * <br>
  * use {@link callMongo} to safely call this function
  *
- * @param username the username of the user to set the conversation history for
- * @param conversation an array of conversations to be set
+ * @param {string} username the username of the user to set the conversation history for
+ * @param {Array[Object]} conversation an array of conversations to be set
  * @returns {Promise<{sucess: boolean}>} a promise that resolves to an object containing a success flag
  */
 async function setConversationHistory(username, conversation) {
@@ -153,12 +153,12 @@ async function setConversationHistory(username, conversation) {
 /**
  * this function gets a response from the openrouter api.
  * it will access a given model with the given parameters and return the response.
- * @param conversation an array of messages to be used as context for the response
- * @param prompt the prompt to be used for the response, will be appended to the end of the conversation
- * @param model the model to get the response from
- * @param responsePrefix a prefix to be added to the beginning of the model's response. will be appended to the end of the conversation
- * @param params additional parameters to be passed to the model
- * @param role the role taken when prompting the model, can be "user", "system", or "model"
+ * @param {Array[Object]} conversation an array of messages to be used as context for the response
+ * @param {string} prompt the prompt to be used for the response, will be appended to the end of the conversation
+ * @param {string} model the model to get the response from
+ * @param {string} responsePrefix a prefix to be added to the beginning of the model's response. will be appended to the end of the conversation
+ * @param {Object} params additional parameters to be passed to the model
+ * @param {string} role the role taken when prompting the model, can be "user", "system", or "model"
  * @returns {Promise<{message: string}>} a promise that resolves to an object containing the response from the model
  */
 async function getResponse(conversation, prompt, model, responsePrefix="", params={}, role="user") {
@@ -225,8 +225,8 @@ let lastCall = Promise.resolve();
  * you should use this function as a wrapper around all calls to the mongo database.
  *
  *
- * @param method the method to call on the mongo database
- * @param params the parameters to pass to the method, in order
+ * @param {Function} method the method to call on the mongo database
+ * @param {Array} params the parameters to pass to the method, in order
  * @returns {Promise<*>} a promise that resolves to the result of the method called
  */
 function callMongo(method, params) {
@@ -241,10 +241,10 @@ function callMongo(method, params) {
  *
  * @returns {Promise<*[]>} a promise that resolves to an array of model objects, each object is as follows: <br>
  * {<br>
- *     id: string,<br>
- *     name: string,<br>
- *     description: string,<br>
- *     isFree: boolean<br>
+ *     id: String,
+ *     name: String,
+ *     description: String,
+ *     isFree: boolean
  * }
  */
 async function getModels() {

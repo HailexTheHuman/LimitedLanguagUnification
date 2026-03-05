@@ -9,7 +9,12 @@ console.log("Backend started!")
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
+/**
+ * this is the endpoint for the backend to generate a response to a prompt
+ *
+ * it is a post request with the following body:
+ * @param {string} context the context of the conversation
+ */
 app.post("/generate", async (req, res) => {
 
     const { context, prompt, model, resPrefix, params, role} = req.body;
