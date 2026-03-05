@@ -68,17 +68,25 @@ const transporter = mailer.createTransport({
     },
 });
 
-
+/**
+ * the main route of the frontend, redirects to the main page
+ */
 app.get('/', (req, res) => {
     res.redirect('/main');
 });
 
+/**
+ * the logout route of the frontend, clears the session and redirects to the login page
+ */
 app.get('/logout', (req, res) => {
     req.session = null;
     res.redirect('/login');
 });
 
-
+/**
+ * the login route of the frontend.
+ * if the user is already logged in, redirects to the main page
+ */
 app.get('/login', (req, res) => {
     if (req.session.username) {
         res.redirect('/main');
@@ -93,7 +101,10 @@ app.get('/login', (req, res) => {
     }
 });
 
-
+/**
+ * the register route of the frontend.
+ * if the user is already logged in, redirects to the main page
+ */
 app.get('/register', (req, res) => {
     if (req.session.username) {
         res.redirect('/main');
@@ -109,7 +120,10 @@ app.get('/register', (req, res) => {
     }
 });
 
-
+/**
+ * the verify route of the frontend.
+ * if the user is already logged in and verified, redirects to the main page
+ */
 app.get('/verify', (req, res) => {
     if (req.session.username && req.session.isVerified) {
         res.redirect('/main');
@@ -279,7 +293,12 @@ app.post('/register', async (req, res) => {
     }
 });
 
-
+/**
+ * the main page of the frontend.
+ * if the user is not logged in, redirects to the login page.
+ * if the user is logged in but not verified, redirects to the verify page.
+ * if the user is logged in and verified, renders the main page.
+ */
 app.get('/main', async (req, res) => {
     if (req.session.username && req.session.isVerified) {
         const user = await fetch('http://localhost:3001/getUser', {
@@ -308,7 +327,17 @@ app.get('/main', async (req, res) => {
         res.redirect('/login');
     }
 })
-
+/**
+ * this is the endpoint for the frontend to send a prompt to the backend.
+ * it is a post-request with the following body:
+ * @param {Array[Object]} context the context of the conversation
+ * @param {string} prompt the prompt to generate a response to
+ * @param {string} model the model to use to generate the response
+ * @param {string} resPrefix the prefix to use for the response
+ * @param {Object} params the parameters to use for the response
+ * @param {string} role the role of the user
+ * @returns {Object} the response to the prompt
+ */
 app.post('/sendPrompt', async (req, res) => {
     const { context, prompt, model, resPrefix, params, role } = req.body;
 
@@ -323,7 +352,14 @@ app.post('/sendPrompt', async (req, res) => {
     res.json(await response);
 })
 
-
+/**
+ * this is the endpoint for the frontend to set the conversation history of a user.
+ * it is a post-request with the following body:
+ * @param {string} username the username of the user to set the conversation history of
+ * @param {string} password the password of the user to set the conversation history of
+ * @param {Array[Object]} conversation the conversation history of the user to set
+ * @returns {Object} a confirmation that the conversation history was set
+ */
 app.post('/setConversationHistory', async (req, res) => {
     const { username, password, conversation } = req.body;
     const response = await fetch('http://localhost:3001/setConversationHistory', {
@@ -336,6 +372,9 @@ app.post('/setConversationHistory', async (req, res) => {
     res.json(await response.json());
 })
 
+/**
+ * a temporary function used to set up the frontend, it is not needed and can be safely removed
+ */
 function setup() {
     app.listen(port, () => {
         console.log(`Server running at http://localhost:${port}`);
