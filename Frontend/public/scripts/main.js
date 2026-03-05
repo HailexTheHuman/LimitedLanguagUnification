@@ -269,7 +269,7 @@ canEditSelect.addEventListener("change", () => {
 /**
  * the function for displaying {@link currentConversation} in the {@link conversation} element.
  *
- * it will clear the {@link conversation} element and loop through all messages in {@link currentConversation} and add them to the {@link conversation} element.
+ * it will clear the {@link conversation} elemennt and loop through all messages in {@link currentConversation} and add them to the {@link conversation} element.
  *
  * if the {@link canEditSelect} element is checked, it will add the contenteditable attribute to all elements and add an event listener to each of them.
  *
