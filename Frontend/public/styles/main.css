@@ -51,6 +51,7 @@ div.sideBanner {
 main {
     padding: 10px;
     overflow-y: auto;
+    min-height: 20rem;
     width: 70%;
     overflow-wrap: anywhere;
     /* min-width: 1200px; */
