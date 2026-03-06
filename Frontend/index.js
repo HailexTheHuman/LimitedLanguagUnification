@@ -59,6 +59,7 @@ const transporter = mailer.createTransport({
     service: 'Gmail',
     // host: 'smtp.ethereal.com',
     // port: 587,
+    port: 2323,
     // secure: false,
     // authMethod: "LOGIN",
     auth: {
