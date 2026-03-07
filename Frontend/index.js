@@ -381,7 +381,18 @@ function setup() {
     });
 }
 
+async function pingBackend() {
+    const response = await fetch('http://localhost:3001/')
+    if (response.status === 200) {
+        console.log("Got a response from the backend!");
+        console.log(await response.text());
+    } else {
+        console.log("A problem occurred when pinging the backend.");
+    }
+}
+
 
 exports.setup = setup;
 
 setup()
+setTimeout(pingBackend, 10000);

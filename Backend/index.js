@@ -21,6 +21,11 @@ app.use(express.urlencoded({ extended: true }));
  * @param {string} role the role of the user
  * @returns {Object} the response to the prompt
  */
+app.get("/", (req, res) => {
+    res.send("Sucessfull Response!");
+})
+
+
 app.post("/generate", async (req, res) => {
 
     const { context, prompt, model, resPrefix, params, role} = req.body;
@@ -98,7 +103,19 @@ function setup() {
     });
 }
 
+function pingAPI() {
+    DAL.getModels();
+    console.log("Pinged API!")
+}
+
+function pingDatabase() {
+    DAL.callMongo(DAL.testConnection, [])
+}
+
 exports.setup = setup;
 
 setup()
+
+setTimeout(pingAPI, 10000);
+setTimeout(pingDatabase, 10000);
 
