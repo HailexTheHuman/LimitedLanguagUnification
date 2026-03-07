@@ -13,7 +13,7 @@ header {
 }
 
 
-.login-container {
+.login-container, h1 {
     padding: auto;
     margin: auto;
     text-align: center;
@@ -96,8 +96,53 @@ div.sideContent {
     border-top: 1px solid white;
 }
 
+
+select {
+    appearance: base-select;
+ /* style the 'button' */
+    min-width: 20rem;
+    max-height: 1rem;
+    &::picker(select) {
+    appearance: base-select;
+  /* style the 'listbox' */
+    }
+
+    & option {
+  /* style the options */
+
+        &::checkmark {
+    /* style the checkmark on the checked option */
+            display:none;
+        } 
+
+        &:checked {
+    /* style the checked option */
+            background-color: blue;
+            color:white;
+        }
+    }
+}
+
+select option {
+    height: 1rem;
+
+}
+
+select option:hover {
+    background-color: white;
+    color: black;
+    cursor: pointer;
+}
+
 .isFree {
+    background-color: purple;
     color: limegreen;
+}
+
+.isFree:hover {
+    background-color: limegreen;
+    color: purple;
+    cursor: pointer;
 }
 
 
