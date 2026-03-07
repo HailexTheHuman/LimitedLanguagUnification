@@ -96,7 +96,7 @@ div.sideContent {
     border-top: 1px solid white;
 }
 
-
+/* figured out the following thanks to this site: https://dev.to/link2twenty/future-of-css-select-styling-without-the-hacks-38c2 */
 select {
     appearance: base-select;
  /* style the 'button' */
