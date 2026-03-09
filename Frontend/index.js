@@ -21,40 +21,10 @@ app.use(cookies({
 }));
 
 
-// let transporter;
-// mailer.createTestAccount((err, account) => {
-//     if (err) {
-//         console.error("Failed to create a testing account. " + err.message);
-//         return;
-//     }
 
-//     // Create a transporter using the Ethereal test account credentials
-//     transporter = mailer.createTransport({
-//         host: account.smtp.host,
-//         port: account.smtp.port,
-//         secure: account.smtp.secure,
-//         auth: {
-//         user: account.user,
-//         pass: account.pass,
-//         },
-//     });
-
-//     // Send a test message
-//     transporter.sendMail({
-//         from: "Example App <no-reply@example.com>",
-//         to: "user@example.com",
-//         subject: "Hello from tests",
-//         text: "This message was sent from a Node.js integration test.",
-//     })
-//     .then((info) => {
-//         console.log("Message sent: %s", info.messageId);
-//         // Get a URL to preview the message in Ethereal's web interface
-//         console.log("Preview URL: %s", mailer.getTestMessageUrl(info));
-//     })
-//     .catch(console.error);
-// });
-
-
+/**
+ * creates the email login to send verification email
+ */
 const transporter = mailer.createTransport({
     service: 'Gmail',
     // host: 'smtp.ethereal.com',
@@ -138,7 +108,14 @@ app.get('/verify', (req, res) => {
 
 
 
-
+/**
+ * the verify post of the front end
+ * user must enter the verification code that was emailed to them
+ * this uses bcrypt to compare the encrypted code that is in the database with the code the user enters
+ * if the correct code is entered the backend is then called to reach out to the DB and change isVerified from false to true
+ * @param {String} username the username of the user trying to be verified
+ * @param {int} verificationCode the code the user enters to attempt verification
+ */
 app.post('/verify', async (req, res) => {
     let verifySuccessful = false;
     const verificationCode = req.body.verificationCode;
@@ -182,7 +159,13 @@ app.post('/verify', async (req, res) => {
 
 
 
-
+/**
+ * the login post of the frontend
+ * this will pull the encrypted password from the DB that belongs to the user who is attempting to login
+ * the correct password and the attempted password will be compared with bcrypt to determine if they have valid credentials
+ * @param {String} username the username the user enters
+ * @param {String} password the password the user enters
+ */
 app.post('/login', async (req, res) => {
     loginSuccessful = false;
     const { username, password } = req.body;
@@ -219,16 +202,37 @@ app.post('/login', async (req, res) => {
     }
 });
 
+
+/**
+ * This encrypts the password with bcrypt
+ * @param {String} password 
+ * @returns 
+ */
 function encryptPassword(password) {
     const saltRounds = 10;
     const salt = bcrypt.genSaltSync(saltRounds);
     return bcrypt.hashSync(password, salt);
 }
 
+/**
+ * this compares an encrypted password to an unencrypted password using bcrypt
+ * @param {String} password the unencrypted password
+ * @param {String} hash the encrypted password
+ */
 verifyPassword = (password, hash) => {
     return bcrypt.compareSync(password, hash);
 }
 
+/**
+ * the register post of the frontend
+ * this will redirect to the login page if the username is already in use
+ * this will store an encrypted password and an encypted verificationCode in the database
+ * this will send the verification code to the user's email
+ * as well as create an unverified user and redirect to the verification route
+ * @param {String} username the username the user enters
+ * @param {String} password the password the user enters
+ * @param {String} email the user's email
+ */
 app.post('/register', async (req, res) => {
     registerSuccessful = false;
     message = "";
@@ -381,6 +385,9 @@ function setup() {
     });
 }
 
+/**
+ * this pings the backend to make sure it is reachable
+ */
 async function pingBackend() {
     const response = await fetch('http://localhost:3001/')
     if (response.status === 200) {
