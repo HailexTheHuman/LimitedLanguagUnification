@@ -10,6 +10,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 /**
+ * this is just used for testing purposes
+ */
+app.get("/", (req, res) => {
+    res.send("Sucessfull Response!");
+})
+
+
+/**
  * this is the endpoint for the backend to generate a response to a prompt
  *
  * it is a post-request with the following body:
@@ -21,11 +29,6 @@ app.use(express.urlencoded({ extended: true }));
  * @param {string} role the role of the user
  * @returns {Object} the response to the prompt
  */
-app.get("/", (req, res) => {
-    res.send("Sucessfull Response!");
-})
-
-
 app.post("/generate", async (req, res) => {
 
     const { context, prompt, model, resPrefix, params, role} = req.body;
@@ -44,6 +47,11 @@ app.post("/getUser", async (req, res) => {
     res.json(await DAL.callMongo(DAL.getUserByUsername, [username]));
 })
 
+/**
+ * this is the endpoint for the backend to verify a user by their username
+ * @param {string} username the username of the user to get
+ * @returns {Object} the user with the given username
+ */
 app.post("/verifyUser", async (req, res) => {
     const { username } = req.body;
     res.json(await DAL.callMongo(DAL.verifyByUsername, [username]));
@@ -63,6 +71,7 @@ app.post("/createUser", async (req, res) => {
     const { username, password, email, isVerified, verificationCode } = req.body;
     res.json(await DAL.callMongo(DAL.createUser, [username, password, email, isVerified, verificationCode]))
 })
+
 /**
  * this is the endpoint for the backend to set the conversation history of a user
  * it is a post-request with the following body:
@@ -83,6 +92,7 @@ app.post("/setConversationHistory", async (req, res) => {
     }
 
 })
+
 /**
  * this is the endpoint for the backend to get all the models
  * it is a post-request with no body
@@ -103,11 +113,19 @@ function setup() {
     });
 }
 
+
+/**
+ * this pings the API to make sure it is reachable
+ */
 function pingAPI() {
     DAL.getModels();
     console.log("Pinged API!")
 }
 
+
+/**
+ * this pings the database to make sure it is reachable
+ */
 function pingDatabase() {
     DAL.callMongo(DAL.testConnection, [])
 }
