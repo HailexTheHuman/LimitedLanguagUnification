@@ -83,6 +83,12 @@ async function createUser(username, password, email, isVerified, verificationCod
 }
 
 
+/**
+ * this is a function to verify a new user
+ * <br>
+ * use {@link callMongo} to safely call this function
+ * @param {string} username the username of the user
+ */
 async function verifyByUsername(username) {
     try {
         await client.connect();
