@@ -1,0 +1,13 @@
+before running you will need to create a file called ".env" in the ./backend/ and another ".env" in the ./Frontend/
+in the backend .env you will need the following:
+    MONGO_PASS = mongo password to a DB called LLU with a users collection
+    OPEN_ROUTER = you will also need an open router api key
+
+in the Frontend .env you will need the following:
+    EMAIL_USER = username of an email account that can send emails through nodemailer
+    EMAIL_PASS = mail password that will let you send emails through nodemailer, THIS IS NOT THE SAME AS YOUR EMAIL ACCOUNT PASSWORD AND YOU MAY NEED TO CREATE ONE
+
+
+after you have the .env files setup run the following commands:
+    node setup.js
+    node index.js (node) or node develop.js (nodemon)
