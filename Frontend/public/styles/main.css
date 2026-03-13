@@ -37,6 +37,7 @@ div.sidePanel {
     align-content:flex-start;
     align-items:flex-start;
     align-self:flex-start;
+    height: 45rem;
     width: 30%;
     border-right: 1px solid white;
     overflow-y: auto;
